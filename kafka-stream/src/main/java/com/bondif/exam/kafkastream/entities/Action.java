@@ -19,6 +19,7 @@ public class Action {
     private Long id;
 
     private String companyName;
-    private String orderType;
-    private Double actionPrice;
+    private Long soldActions;
+    private Long boughtActions;
+    private Double actionsAvgPrice;
 }

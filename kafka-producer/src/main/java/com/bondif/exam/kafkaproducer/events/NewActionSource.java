@@ -35,7 +35,7 @@ public class NewActionSource implements ApplicationRunner {
             Company company = companyRepository.findById(ids.get(new Random().nextInt(ids.size()))).get();
             String orderType = orderTypes.get(new Random().nextInt(orderTypes.size()));
             NewActionEvent actionEvent = new NewActionEvent(company.getName(), orderType, new Random().nextDouble());
-            kafkaTemplate.send("actions", actionEvent);
+            kafkaTemplate.send("actions", actionEvent.getCompanyName(), actionEvent);
         };
 
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(runnable, 1000, 10, TimeUnit.MILLISECONDS);
