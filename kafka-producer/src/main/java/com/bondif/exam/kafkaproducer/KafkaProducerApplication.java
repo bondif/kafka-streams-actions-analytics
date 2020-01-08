@@ -17,6 +17,7 @@ public class KafkaProducerApplication {
     @Bean
     CommandLineRunner start(CompanyRepository companyRepository) {
         return args -> {
+            companyRepository.deleteAll();
             companyRepository.save(new Company("A", "Oracle"));
             companyRepository.save(new Company("B", "Google"));
             companyRepository.save(new Company("C", "IBM"));

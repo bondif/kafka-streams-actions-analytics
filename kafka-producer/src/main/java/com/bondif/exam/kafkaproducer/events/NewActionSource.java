@@ -28,16 +28,16 @@ public class NewActionSource implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         Runnable runnable = () -> {
             List<String> ids = Arrays.asList("A", "B", "C", "D", "E", "F");
             List<String> orderTypes = Arrays.asList("SALE", "BUY");
             Company company = companyRepository.findById(ids.get(new Random().nextInt(ids.size()))).get();
             String orderType = orderTypes.get(new Random().nextInt(orderTypes.size()));
-            NewActionEvent actionEvent = new NewActionEvent(company.getName(), orderType, new Random().nextDouble());
+            NewActionEvent actionEvent = new NewActionEvent(company.getName(), orderType, Math.floor(new Random().nextDouble() * 2000));
             kafkaTemplate.send("actions", actionEvent.getCompanyName(), actionEvent);
         };
 
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(runnable, 1000, 10, TimeUnit.MILLISECONDS);
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(runnable, 1, 4, TimeUnit.SECONDS);
     }
 }

@@ -4,22 +4,23 @@ package com.bondif.exam.kafkastream.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.Id;
 
 @Entity
-@Table(name = "actions")
-@Data @AllArgsConstructor @NoArgsConstructor
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Action {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String companyName;
-    private Long soldActions;
-    private Long boughtActions;
+    private Long soldActionsSum;
+    private Long boughtActionsSum;
     private Double actionsAvgPrice;
 }

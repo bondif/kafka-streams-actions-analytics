@@ -4,11 +4,9 @@ import com.bondif.exam.kafkastream.entities.NewActionEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.*;
+import org.apache.kafka.streams.kstream.*;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -31,7 +29,7 @@ public class KafkaStreamConfig {
     public KafkaStreamsConfiguration kafkaStreamsConfiguration() {
         Map<String, Object> config = new HashMap<>();
 
-        config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.57.3:9092");
+        config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
         config.put(StreamsConfig.APPLICATION_ID_CONFIG, "actions-stream");
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
@@ -46,13 +44,39 @@ public class KafkaStreamConfig {
     }
 
     @Bean
-    public KStream<String, String> process() throws Exception {
+    public KStream<String, String> soldActions() throws Exception {
         KStream<String, String> stream = factoryBean().getObject().stream("actions");
-//        KTable<String, String> analytics = stream.
+
+        stream.foreach((k, v) -> {
+            System.out.println(k + " :: " + v);
+        });
+
+//        KStream<String, Long> soldActions = stream
+//                .map((k, v) -> new KeyValue<>(k, newActionEvent(v)))
+//                .filter((k, v) -> v.getOrderType().equals("SALE"))
+//                .groupByKey()
+//                .windowedBy(TimeWindows.of(5000))
+//                .count(Materialized.as("soldActions")).toStream()
+//                .map((k, v) -> new KeyValue<>(k.key(), v));
+//        soldActions.to("soldActions", Produced.valueSerde(Serdes.Long()));
+
+//        KStream<String, Long> boughtActions = stream.
+//                map((k, v) -> new KeyValue<>(k, newActionEvent(v)))
+//                .filter((k, v) -> v.getOrderType().equals("BUY"))
+//                .groupByKey()
+//                .windowedBy(TimeWindows.of(5000))
+//                .count(Materialized.as("boughtActions")).toStream()
+//                .map((k, v) -> new KeyValue<>(k.key(), v));
+//        boughtActions.to("boughtActions", Produced.valueSerde(Serdes.Long()));
+//
+//        KStream<String, Double> actionsAvgPrice = stream.
 //                map((k, v) -> new KeyValue<>(k, newActionEvent(v)))
 //                .groupByKey()
-//                .windowedBy(TimeWindows.of(5000));
-                // TODO : send results to mysql database
+//                .windowedBy(TimeWindows.of(5000))
+//                .reduce(this::actionsAvgPrice, Materialized.as("actionsAvgPrice")).toStream()
+//                .map((k, v) -> new KeyValue<>(k.key(), v.getActionPrice()));
+//        actionsAvgPrice.to("actionsAvgPrice", Produced.valueSerde(Serdes.Double()));
+
         return stream;
     }
 
@@ -66,5 +90,11 @@ public class KafkaStreamConfig {
         }
 
         return actionEvent;
+    }
+
+    private NewActionEvent actionsAvgPrice(NewActionEvent actionEvent1, NewActionEvent actionEvent2) {
+        return new NewActionEvent(actionEvent1.getCompanyName(),
+                actionEvent1.getOrderType(),
+                (actionEvent1.getActionPrice() + actionEvent2.getActionPrice()) / 2);
     }
 }
