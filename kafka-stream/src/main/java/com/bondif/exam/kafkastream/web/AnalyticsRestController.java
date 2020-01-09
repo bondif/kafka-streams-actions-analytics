@@ -12,6 +12,10 @@ public class AnalyticsRestController {
 
     private ActionRepository actionRepository;
 
+    public AnalyticsRestController(ActionRepository actionRepository) {
+        this.actionRepository = actionRepository;
+    }
+
     @GetMapping("/analytics")
     public Collection<Action> soldActions() {
         return actionRepository.findAll();
