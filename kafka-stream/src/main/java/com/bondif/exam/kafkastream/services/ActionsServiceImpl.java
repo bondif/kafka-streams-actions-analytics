@@ -26,4 +26,16 @@ public class ActionsServiceImpl implements ActionsService {
 
         actionRepository.save(action);
     }
+
+    @Override
+    public void incrementBoughtActions(String company, Long actionsCount) {
+        Action action = actionRepository.findFirstByCompanyName(company);
+
+        if (action == null) {
+            action = new Action(null, company, 0L, 0L, 0D);
+        }
+        action.setBoughtActionsSum(action.getBoughtActionsSum() + actionsCount);
+
+        actionRepository.save(action);
+    }
 }

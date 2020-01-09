@@ -17,8 +17,14 @@ public class AnalyticsConsumer {
     }
 
     @KafkaListener(topics = "soldActions", groupId = "trade")
-    public void onMessage(ConsumerRecord message) {
+    public void onSoldActions(ConsumerRecord message) {
         log.info("receiving : " + message.key() + " :: " + message.value());
         actionsService.incrementSoldActions(message.key().toString(), (Long) message.value());
+    }
+
+    @KafkaListener(topics = "boughtActions", groupId = "trade")
+    public void onBoughtActions(ConsumerRecord message) {
+        log.info("receiving buy : " + message.key() + " :: " + message.value());
+        actionsService.incrementBoughtActions(message.key().toString(), (Long) message.value());
     }
 }
