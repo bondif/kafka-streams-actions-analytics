@@ -1,6 +1,6 @@
-package com.bondif.exam.kafkaproducer.config;
+package com.bondif.exam.kafkastream.config;
 
-import com.bondif.exam.kafkaproducer.events.NewActionEvent;
+import com.bondif.exam.kafkastream.entities.NewActionEvent;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,8 @@
-package com.bondif.exam.kafkaproducer.events;
+package com.bondif.exam.kafkastream.events;
 
-import com.bondif.exam.kafkaproducer.dao.CompanyRepository;
-import com.bondif.exam.kafkaproducer.entities.Company;
+import com.bondif.exam.kafkastream.dao.CompanyRepository;
+import com.bondif.exam.kafkastream.entities.Company;
+import com.bondif.exam.kafkastream.entities.NewActionEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

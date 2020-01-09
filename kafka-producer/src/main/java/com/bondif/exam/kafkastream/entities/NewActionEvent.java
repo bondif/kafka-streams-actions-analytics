@@ -1,4 +1,4 @@
-package com.bondif.exam.kafkaproducer.events;
+package com.bondif.exam.kafkastream.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

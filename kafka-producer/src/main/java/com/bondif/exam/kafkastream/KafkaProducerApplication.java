@@ -1,7 +1,7 @@
-package com.bondif.exam.kafkaproducer;
+package com.bondif.exam.kafkastream;
 
-import com.bondif.exam.kafkaproducer.dao.CompanyRepository;
-import com.bondif.exam.kafkaproducer.entities.Company;
+import com.bondif.exam.kafkastream.dao.CompanyRepository;
+import com.bondif.exam.kafkastream.entities.Company;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
