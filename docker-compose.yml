@@ -1,8 +1,9 @@
-version: '2'
+version: '3.7'
+
 services:
-  zookeeper-1:
-    image: confluentinc cp zookeeper:latest
-    hostname: zookeeper-1
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
     ports:
       - "12181:12181"
     environment:
@@ -11,33 +12,46 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-  kafka-1:
-    image: confluentinc cp kafka:latest
-    hostname: kafka-1
+      ZOOKEEPER_SERVERS: zookeeper:12181
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
     ports:
       - "19092:19092"
-  depends_on:
-    - zookeeper-1
-  environment:
-    KAFKA_BROKER_ID: 1
-    KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:12181
-    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:19092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:12181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:19092
 
   mongo:
     image: mongo
+
   mysql:
-    image: mysql
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
 
   kafka-producer:
-    image: kafka-producer
-    ports:
-      - "8080:8080"
+    build:
+      context: kafka-producer
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/companies
     depends_on:
+      - kafka
       - mongo
 
   kafka-stream:
-    image: kafka-stream
+    build:
+      context: kafka-stream
+      dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/actions?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
     depends_on:
+      - kafka
+      - kafka-producer
       - mysql
